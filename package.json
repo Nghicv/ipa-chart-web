@@ -13,7 +13,8 @@
     "firebase:serve": "firebase serve",
     "firebase:deploy": "firebase deploy",
     "firebase:emulators": "firebase emulators:start",
-    "pages:build": "GITHUB_ACTIONS=true GITHUB_REPOSITORY=nghicv/ipa-chart-web npm run build",
+    "pages:clean": "rm -rf .next dist out",
+    "pages:build": "npm run pages:clean && GITHUB_ACTIONS=true GITHUB_REPOSITORY=nghicv/ipa-chart-web NODE_ENV=production npm run build",
     "pages:serve": "npx serve dist"
   },
   "dependencies": {

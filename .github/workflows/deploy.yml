@@ -21,35 +21,58 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         
+      - name: Debug Git Info
+        run: |
+          echo "Current branch: $(git branch --show-current)"
+          echo "Git status:"
+          git status
+          echo "Repository info:"
+          echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+          echo "GITHUB_REF: $GITHUB_REF"
+          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
           
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Debug environment
+      - name: Check Node & NPM version
         run: |
-          echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
-          echo "Current directory:"
-          pwd
-          echo "Directory contents:"
-          ls -la
-        
+          node --version
+          npm --version
+          
+      - name: Clean install dependencies
+        run: |
+          echo "Installing dependencies..."
+          npm ci
+          echo "Installed dependencies:"
+          npm list --depth=0
+          
+      - name: Check Next.js config
+        run: |
+          echo "next.config.ts contents:"
+          cat next.config.ts
+          
       - name: Build for GitHub Pages
-        run: npm run build
+        run: |
+          echo "Starting build..."
+          npm run pages:build
+          echo "Build completed. Checking output:"
+          ls -la dist/
         env:
+          NODE_ENV: production
           GITHUB_ACTIONS: true
           GITHUB_REPOSITORY: ${{ github.repository }}
           
       - name: Verify build output
         run: |
-          echo "Checking dist directory:"
+          echo "Checking dist directory structure:"
           ls -la dist
-          echo "Checking for index.html:"
-          cat dist/index.html | head -n 5
+          echo "Checking for critical files:"
+          test -f dist/index.html || (echo "Error: index.html missing" && exit 1)
+          test -f dist/.nojekyll || (echo "Error: .nojekyll missing" && exit 1)
+          test -d dist/_next || (echo "Error: _next directory missing" && exit 1)
+          echo "First 10 lines of index.html:"
+          head -n 10 dist/index.html
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
