@@ -1,0 +1,21 @@
+# Settings for Netlify builds
+
+[build]
+  # Build command
+  command = "npm run build"
+  
+  # Directory to publish
+  publish = "out"
+  
+  # Environment variables
+  [build.environment]
+    # Set this to let our next.config.js know we're on Netlify
+    NETLIFY = "true"
+
+# Redirect rule for single-page applications (like Next.js static export)
+# This rule is essential to handle client-side routing and prevent 404s.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  

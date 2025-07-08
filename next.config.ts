@@ -1,45 +1,41 @@
 import type { NextConfig } from "next";
 
-// Detect deployment platform
+// Platform detection
 const isGitHubPages = process.env.GITHUB_ACTIONS === 'true';
-const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
+const isNetlify = process.env.NETLIFY === 'true';
 
-// GitHub Pages needs repo name as base path
+// Determine if it's a static build
+const isStatic = isGitHubPages || isNetlify;
+
+// Base path logic for GitHub Pages
 const repo = process.env.GITHUB_REPOSITORY?.split('/')[1] || '';
 const basePath = isGitHubPages ? `/${repo}` : '';
 const assetPrefix = isGitHubPages ? `/${repo}/` : '';
 
-// Debug logging
-console.log('🔍 Deployment Detection:');
-console.log('- GITHUB_ACTIONS:', process.env.GITHUB_ACTIONS);
-console.log('- VERCEL:', process.env.VERCEL);
-console.log('- VERCEL_ENV:', process.env.VERCEL_ENV);
-console.log('- isGitHubPages:', isGitHubPages);
-console.log('- isVercel:', isVercel);
-console.log('- basePath:', basePath);
+console.log("--- Build Environment ---");
+console.log(`isGitHubPages: ${isGitHubPages}`);
+console.log(`isNetlify: ${isNetlify}`);
+console.log(`isStatic: ${isStatic}`);
+console.log(`basePath: ${basePath}`);
+console.log("-----------------------");
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Use static export for GitHub Pages and Netlify
+  output: isStatic ? 'export' : undefined,
+
+  // Use 'out' as the build directory for all static builds
+  distDir: isStatic ? 'out' : '.next',
+
+  // GitHub Pages specific configuration
   ...(isGitHubPages && {
-    // GitHub Pages configuration
-    output: 'export',
-    trailingSlash: true,
-    skipTrailingSlashRedirect: true,
-    distDir: 'dist',
-    basePath,
-    assetPrefix,
-    images: {
-      unoptimized: true,
-    },
+    basePath: basePath,
+    assetPrefix: assetPrefix,
   }),
-  
-  // Vercel or default configuration
-  ...(!isGitHubPages && {
-    trailingSlash: false,
-    images: {
-      formats: ['image/avif', 'image/webp'],
-    },
-  }),
+
+  // Unoptimized images for all static builds
+  images: {
+    unoptimized: isStatic,
+  },
 };
 
 export default nextConfig;
