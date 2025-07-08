@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next dist node_modules/.cache",
+    "vercel:deploy": "vercel --prod --force"
   },
   "dependencies": {
     "react": "^19.0.0",
