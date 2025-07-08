@@ -7,8 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "clean": "rm -rf .next dist node_modules/.cache",
-    "vercel:deploy": "vercel --prod --force"
+    "clean": "rm -rf .next dist out node_modules/.cache",
+    "vercel:deploy": "vercel --prod --force",
+    "firebase:build": "FIREBASE_CI=true npm run build",
+    "firebase:serve": "firebase serve",
+    "firebase:deploy": "firebase deploy",
+    "firebase:emulators": "firebase emulators:start"
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -24,6 +28,7 @@
     "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
-    "@eslint/eslintrc": "^3"
+    "@eslint/eslintrc": "^3",
+    "firebase-tools": "^13.0.0"
   }
 }
