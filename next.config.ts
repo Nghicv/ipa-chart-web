@@ -4,6 +4,11 @@ import type { NextConfig } from "next";
 const isGitHubPages = process.env.GITHUB_ACTIONS === 'true';
 const isVercel = process.env.VERCEL === '1';
 
+// GitHub Pages needs repo name as base path
+const repo = process.env.GITHUB_REPOSITORY?.split('/')[1] || '';
+const basePath = isGitHubPages ? `/${repo}` : '';
+const assetPrefix = isGitHubPages ? `/${repo}/` : '';
+
 const nextConfig: NextConfig = {
   /* config options here */
   ...(isGitHubPages && {
@@ -12,16 +17,16 @@ const nextConfig: NextConfig = {
     trailingSlash: true,
     skipTrailingSlashRedirect: true,
     distDir: 'dist',
+    basePath,
+    assetPrefix,
     images: {
       unoptimized: true,
     },
   }),
   
   ...(isVercel && {
-    // Vercel configuration
+    // Vercel configuration - simplified for SSG
     trailingSlash: false,
-    poweredByHeader: false,
-    compress: true,
     images: {
       formats: ['image/avif', 'image/webp'],
     },
