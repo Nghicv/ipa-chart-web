@@ -12,7 +12,9 @@
     "firebase:build": "FIREBASE_CI=true npm run build",
     "firebase:serve": "firebase serve",
     "firebase:deploy": "firebase deploy",
-    "firebase:emulators": "firebase emulators:start"
+    "firebase:emulators": "firebase emulators:start",
+    "pages:build": "GITHUB_ACTIONS=true GITHUB_REPOSITORY=nghicv/ipa-chart-web npm run build",
+    "pages:serve": "npx serve dist"
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -29,6 +31,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "@eslint/eslintrc": "^3",
-    "firebase-tools": "^13.0.0"
+    "firebase-tools": "^13.0.0",
+    "serve": "^14.2.1"
   }
 }
